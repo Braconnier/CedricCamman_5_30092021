@@ -206,9 +206,9 @@ let checkTwins = () => {
       alert('doublons');
       break;
       
-    } else if(el.id === canap.id && el.selectedColor !== canap.selected){
+    } else if (el.id === canap.id && el.selectedColor !== canap.selectedColor){
 
-      if(confirm('deja dans le panier, couleur differente, commander plus ?')){
+      if(confirm ('deja dans le panier, couleur differente, commander plus ?')){
 
         pushCanap();
 
@@ -220,7 +220,7 @@ let checkTwins = () => {
 
       }
 
-    } else if(el.id !== canap.id && el.selectedColor !== canap.selected){
+    } else if(el.id !== canap.id && el.selectedColor !== canap.selectedColor){
 
       pushCanap();
 
