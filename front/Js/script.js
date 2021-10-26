@@ -1,27 +1,46 @@
-// on crée la class product pour exploiter les données retournées par le fetch
+//crée la class product pour exploiter les données retournées par le fetch
 class Product {
+
+    //construit le produit si on a un objet json avec les attributs de celui-ci
     constructor(jsonProduct) {
         jsonProduct && Object.assign(this, jsonProduct)
     }
 }
 
 
-// on interroge l'api pour avoir la liste des produits
+//interroge l'api pour avoir la liste des produits
 fetch('http://localhost:3000/api/products')
-    //on recupère les données au format json
+
+    //recupère les données au format json (catalogue des produits)
     .then(response => response.json()
-        // on parcourt le document pour créer nos objets product
+
+        //parcourt le document pour créer les objets product
         .then(products => {
-            // on boucle pour implémenter les objets dans la page
+
+            //declare l'HTML 
+            let html = "";
+
+            //boucle pour implémenter les objets dans la page
             for (product of products) {
+
+                //construit le produit en utilisant la class Product
                 product = new Product(product)
-                document.getElementById('items').innerHTML += `<a href="./product.html?id=${product._id}">
-                                                                    <article>
-                                                                        <img src="${product.imageUrl}" alt="${product.altTxt}">
-                                                                        <h3 class="productName">${product.name}</h3>
-                                                                        <p class="productDescription">${product.description}</p>
-                                                                    </article>
-                                                                </a>`
+
+                //prepare l'affichage d'un produit
+                html += `<a href="./product.html?id=${product._id}">
+                             <article>
+                                <img src="${product.imageUrl}" alt="${product.altTxt}">
+                                <h3 class="productName">${product.name}</h3>
+                                <p class="productDescription">${product.description}</p>
+                            </article>
+                        </a>`
+
             }
+            //affiche le resultat de la boucle (resultat final)
+            document.getElementById('items').innerHTML = html;
+
+            //recupere les potentielles erreurs sur la recuperation des produits 
         }).catch(err => console.log(err))
+
+        // on recupere les potentielles erreurs sur l'appel de l'api 
     ).catch(err => console.log(err))
