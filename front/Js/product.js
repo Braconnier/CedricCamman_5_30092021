@@ -5,43 +5,41 @@ let productId = url.searchParams.get("id");
 
 let urlProductId = "http://localhost:3000/api/products" + `/${productId}`;
 
+// recuperation du panier pour manipulations  --------------------------------------------------------------------------------------------------------------------------------------------------
+let cart = JSON.parse(localStorage.getItem("canap"));
+
 // constructeur
 class Product {
-
   constructor(json) {
-
     json && Object.assign(this, json);
-
   }
-
 }
 
 // gestion du rendu du produit à partir de son Id ----------------------------------------------------------------------------------------------------------------------
 let getProduct = async function () {
-
   // appel de l'api
   await fetch(urlProductId)
-
     // reuperation des infos du produit
-    .then((response) =>response.json()
+    .then((response) => response.json()
 
-          // construction et affichage de product
-          .then((json) => {
+      // construction et affichage de product
+      .then((json) => {
+        // construction de product
+        product = new Product(json);
 
-            // construction de product
-            product = new Product(json);
+        //ecrit le product en sessionStorage
+        sessionStorage.setItem("product", JSON.stringify(product));
 
-            //ecrit le product en sessionStorage
-            sessionStorage.setItem("product", JSON.stringify(product));
+        // appel de la fonction  render
+        render();
 
-            // appel de la fonction  render
-            render();
+        // gestion des erreurs
+      })
+      .catch((err) => console.error(err))
 
-            // gestion des erreurs
-          }).catch((err) => console.error(err))
-
-      // gestion des erreurs
-    ).catch((err) => console.error(err));
+      // gestion des erreurs    
+    )
+    .catch((err) => console.error(err));
 };
 
 // affichage du produit par Id  ----------------------------------------------------------------------------------------------------------------------------------------
@@ -49,12 +47,13 @@ getProduct();
 
 // on affiche les elements du produit ----------------------------------------------------------------------------------------------------------------------------------
 function render() {
-
   // change le titre la page
   document.querySelector("title").innerText = product.name;
 
   // affichage image et alt
-  document.querySelector(".item__img").innerHTML = `<img src="${product.imageUrl}" alt="${product.altTxt}">`;
+  document.querySelector(
+    ".item__img"
+  ).innerHTML = `<img src="${product.imageUrl}" alt="${product.altTxt}">`;
 
   // affichage nom
   document.querySelector("#title").innerText = product.name;
@@ -76,75 +75,64 @@ function render() {
 
   // on boucle pour recuperer les options de couleurs
   colors.forEach((color) => {
-
     // on concatene les options
     htmlOptions += `<option value="${color}">${color}</option>`;
-
   });
 
   // on affiche les options des couleurs
   options.innerHTML += htmlOptions;
-
 }
 
 // ecouteur des options de couleurs ------------------------------------------------------------------------------------------------------------------------------------------
-let selectedColor = document.querySelector("#colors").addEventListener("change", function (e) {
-
+let selectedColor = document
+  .querySelector("#colors")
+  .addEventListener("change", function (e) {
     // si non valide, renvoie faux
     if (e.target.innerText === "--SVP, choisissez une couleur --") {
-
       return false;
 
       //si valide, renvoie vrai et la valeur de la couleur selectionée
     } else {
-
       selectedColor = e.target.value;
 
       return true;
-
     }
-
   });
 
-// ecouteur des options de quantiité  ----------------------------------------------------------------------------------------------------------------------------------------------
-let qte = document.querySelector("#quantity").addEventListener("change", function (e) {
-
+// ecouteur des options de quantiité  ----------------------------------------------------------------------------------------------------------------------------------------------  
+let qte = document
+  .querySelector("#quantity")
+  .addEventListener("change", function (e) {
     // si non valide(inferieur ou egal 0 ou supérieur à 100)  renvoie faux
     if (e.target.value <= 0 || e.target.value > 100) {
-
       return false;
 
       // si valide, renvoie vrai et la quantité selectionée
     } else {
-
       qte = e.target.value;
 
       return true;
     }
   });
 
-// ecouteur du bouton de commande ------------------------------------------------------------------------------------------------------------------------------------------------------
+// ecouteur du bouton de commande ------------------------------------------------------------------------------------------------------------------------------------------------------  
 document.querySelector("#addToCart").addEventListener("click", function () {
-
   // si couleur et quantité valides, enregistre l'Id, la couleur et la quantité selectionée
   if (selectedColor && qte) {
-
     // recupere les données du produit de la page
     product = JSON.parse(sessionStorage.getItem("product"));
 
-    product.selectedColor = selectedColor
+    product.selectedColor = selectedColor;
 
-    product.qte = qte
+    product.qte = qte;
 
     // construction du produit a envoyer au panier
     canap = {
-
       id: productId,
 
       selectedColor: selectedColor,
 
       qte: qte,
-
     };
 
     // appel de la fonction de commande
@@ -152,80 +140,141 @@ document.querySelector("#addToCart").addEventListener("click", function () {
 
     // alert en cas de données couleurs ou quantité invalide
   } else if (!selectedColor) {
-
     alert("veuillez choisir une couleur");
-
   } else if (!qte) {
-
     alert("veuillez choisir une quantité");
-
   }
-
 });
 
 // passer l'article au panier ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 let pushCanap = () => {
-
   cart.push(canap);
 
   localStorage.setItem("canap", JSON.stringify(cart));
 
   alert("le produit a bien été ajouté au panier");
-
 };
 
 // fonction de commande -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 function sendToCart() {
-  
   // interroge le localStorage et verifie la presence de la clé canap
   if (localStorage.getItem("canap")) {
-    
-    checkTwins();
-    
+    checkSiblings();
+
     // si le localStorage est vide, alors on crée la clé canap et on la peuple avec le canap présent
   } else {
-    
     cart = [];
-    
-    pushCanap();
-    
-  }
-  
-}
 
-// recuperation du panier pour manipulations  --------------------------------------------------------------------------------------------------------------------------------------------------
-let cart = JSON.parse(localStorage.getItem("canap"));
+    pushCanap();
+  }
+}
 
 // check des doublons -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-let checkTwins = () => {
+function checkSiblings() {
+  // filtrage par id produit
+  let found = cart.filter((element) => element.id === canap.id);
 
-  for (el of cart) {
+  // trouve ou non les doublons (id et couleur)
+  let twin = found.find((el) => el.selectedColor === canap.selectedColor);
 
-    if (el.id === canap.id && el.selectedColor === canap.selectedColor) {
+  // si un doublon existe
+  if (twin) {
 
-      alert('doublons');
-      break;
-      
-    } else if (el.id === canap.id && el.selectedColor !== canap.selectedColor){
+    // demande la validation de commande ou non
+    if (confirm("Produit identique dans le panier. Voulez-vous en commander plus ?")) {
 
-      if(confirm ('deja dans le panier, couleur differente, commander plus ?')){
+      // boucle dans le panier
+      for (let i = 0; i < cart.length; i++) {
 
-        pushCanap();
+        // trouve la correspondance dans le panier
+        if (cart[i] === twin) {
 
-        break;
+          // construit le produit avec la nouvelle quantité
+          let modifiedCanap = {
 
-      } else {
+            id: canap.id,
 
-        break;
+            selectedColor: canap.selectedColor,
 
+            // on doit parseINT pour additionner sinon, on concatenerait les chaines de caracteres
+            qte: parseInt(cart[i].qte) + parseInt(canap.qte)
+
+          }
+          // on remplace le canap par le nouveau (nouvelle quantité)
+          cart.splice([i], 1, modifiedCanap);
+
+          // on écrase le locaolStorage 
+          localStorage.setItem('canap', JSON.stringify(cart));
+
+        }
       }
-
-    } else if(el.id !== canap.id && el.selectedColor !== canap.selectedColor){
-
-      pushCanap();
-
     }
 
-  };
+    //  si id egales mais pas couleur
+  } else if (!twin && found.length > 0) {
+
+    if (
+      // popup de confirmation
+      confirm("même article mais d'une couleur différente. Commander celui-ci ?")) {
+      // sur confirmation, passe le produit au panier
+      pushCanap();
+    }
+    // aucune correspondance, passage au panier 
+  } else {
+    pushCanap();
+  }
+
 }
 
+
+
+//   // check de la présence des produits recherchés
+//   if (found.length !== 0) {
+//     // si trouvé, boucle pour rechercher un eventuel doublon par couleur
+//     for (i = 0; i < found.length; i++) {
+//       // recherche de doublon id ET couleur
+//       if (found[i].selectedColor === canap.selectedColor) {
+//         // demande confirmation pour ajouter le produit au panier ou non, on doit modifier la quantité
+//         if (confirm("doublons")) {
+//           modifiyCart(found[i])
+//           alert("le produit a bien été ajouté au panier");
+
+//           // on doit modifier la quantité dans le localStorage ici
+//           break;
+//           // si l'utilisateur annule, on sort de la boucle
+//         } else {
+//           break;
+//         }
+
+//         //  si produit id trouvé mais de couleur différente, on demande à l'utilisateur si il souhaite commander
+//       } else if (
+//         // popup de confirmation
+//         confirm(
+//           "même article mais d'une couleur différente. Commander celui-ci ?"
+//         )
+//       ) {
+//         // sur confirmation, passe le produit au panier
+//         pushCanap();
+//         break;
+//       }
+//     }
+
+//     // si pas de produit trouvé, alors on passe le produit au panier
+//   } else {
+//     pushCanap();
+//   }
+// }
+//  function modifiyCart(twin) {
+//   for (let j = 0; j <cart.length; j++) {
+//     if (cart[j] === twin){
+//       let modifiedCanap = {
+//         id : canap.id,
+//         selectedColor : canap.selectedColor,
+//         qte : parseInt(cart[j].qte) + parseInt(canap.qte)
+//       }
+//       cart.splice([j], 1, modifiedCanap);
+//       localStorage.setItem('canap',JSON.stringify(cart));
+//     }
+//   }
+
+//  }
