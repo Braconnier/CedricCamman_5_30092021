@@ -91,7 +91,9 @@ function deleteMe() {
         deleteTable[i].addEventListener('click', () => {
             cart.splice(i, 1)
             localStorage.setItem('canap', JSON.stringify(cart))
-            location.reload();
+            let toDelete = deleteTable[i]
+            let nodeToDelete = toDelete.closest('.cart__item')
+            nodeToDelete.parentNode.removeChild(nodeToDelete)
         })
     }
 }
