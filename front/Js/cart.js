@@ -215,6 +215,9 @@ function deleteMe(cart) {
             // suppression de l'article dans la page
             nodeToDelete.parentNode.removeChild(nodeToDelete);
 
+            // mise à jour de la quantité totale
+            updateQte(cart);
+
             // mise à jour du prix total du panier
             updatePrice(cart)
 
