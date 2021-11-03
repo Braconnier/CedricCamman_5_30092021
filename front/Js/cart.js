@@ -14,7 +14,7 @@ render();
 
 
 
-// verification de la presence ou de la validité du panier, renvoie vers la page d'accueil si le panier est vide, vide le locaStorage le cas echeant
+// verification de la presence ou de la validité du panier, renvoie vers la page d'accueil si le panier est vide, vide le locaStorage le cas echeant    ----------------------------------------------------------
 function checkCart() {
 
     // verification de la validité du panier
@@ -31,7 +31,7 @@ function checkCart() {
     }
 }
 
-// interroge l'api pour avoir la liste des produits
+// interroge l'api pour avoir la liste des produits ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 async function getProduct() {
     await fetch('http://localhost:3000/api/products')
 
@@ -46,9 +46,14 @@ async function getProduct() {
 }
 
 
-// fonction de rendu de la page du panier
+// fonction de rendu de la page du panier   ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 async function render() {
-    await getProduct();
+
+    // limite la requete au premeir chargement de la page 
+    if (!products) {
+
+        await getProduct();
+    }
 
     // declaration html pour les produits du panier
     let html = '';
@@ -89,7 +94,7 @@ async function render() {
 
 }
 
-// géneration de l'HTML par tour de boucle (canap dans le caddie)
+// géneration de l'HTML par tour de boucle (canap dans le caddie)   ----------------------------------------------------------------------------------------------------------------------------------------------------
 function generateHTML() {
 
     // information de l'HTML
@@ -116,7 +121,7 @@ function generateHTML() {
 }
 
 
-// function de modification de la quantité d'un produit du panier
+// function de modification de la quantité d'un produit du panier   -------------------------------------------------------------------------------------------------------------------------------------------------------
 function modifyQte() {
 
     // declaration de la variable pour determiner la position de l'eventListener qui correspond à la position de l'index dans le panier
@@ -151,7 +156,7 @@ function modifyQte() {
     }
 }
 
-// fonction de suppression d'un produit du panier
+// fonction de suppression d'un produit du panier   ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 function deleteItem() {
 
     // declaration de la variable pour trouver le bon produit
@@ -192,7 +197,7 @@ function deleteItem() {
     }
 }
 
-// function de mise à jour de la quantité totale de ppoduits dans le panier
+// function de mise à jour de la quantité totale de ppoduits dans le panier -------------------------------------------------------------------------------------------------------------------------------------------------
 function updateQte() {
 
     // initialisation de la vaible Qte
@@ -210,7 +215,7 @@ function updateQte() {
     document.querySelector('#totalQuantity').innerHTML = totalQte;
 }
 
-// mise à jour du prix total
+// mise à jour du prix total    --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 function updatePrice() {
 
     // initialistaion de la variable
@@ -235,3 +240,58 @@ function updatePrice() {
     document.querySelector('#totalPrice').innerHTML = (totalByProduct / 10).toFixed(2);
 
 }
+
+
+// gestion de validité formulaire --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+// selection du bouton submit (validation du panier pour commande)
+document
+    .querySelector('.cart__order input[type="submit"]')
+    .addEventListener('click', function (e) {
+
+        // on evite le comportement par defaut (recargement de la page)
+        e.preventDefault();
+
+        //  declaration des regEx
+
+        // commence, fini et ne comporte que des lettres prise en charge des accents apostrophes et tirets, ne prend pas la casse en compte
+        let nameRegEx = /^[a-z\-'àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšž]+$/i
+
+        // commence, fini et ne comporte que des chiffres et des lettres, prise en charge des accents apostrophes et tirets, ne prend pas la casse en compte
+        let addressRegEx = /^[a-z0-9\s,'-àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšž]*$/i
+
+        // commence par 5 chiffres suivi d'un espace, la seconde partie ne comporte que des lettres, prise en charge des accents, apostrophes et espaces, fini par des lettres 
+        let cityRegEx = /^[0-9]{5}\s[a-z\,.\-\sàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšž]+$/i
+
+        // commence par n'importe quel caractere "word" (aplhanumerique et underscore), suivi de @ puis de n'importe quel 'mot'( ? = lazy mode), puis un point suivi de 2 ou 3 lettres
+        let emailRegEx = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/
+
+        // declaration puis vérification  de la saisie du prénom
+        let firstName = document.querySelector('#firstName');
+        !firstName.value.match(nameRegEx)
+            ? firstName.nextElementSibling.innerHTML = 'veuillez entrer un nom valide'
+            : firstName.nextElementSibling.innerHTML = ''
+
+        // declaration puis vérification  de la saisie du nom
+        let lastName = document.querySelector('#lastName');
+        !lastName.value.match(nameRegEx)
+            ? firstName.nextElementSibling.innerHTML = 'veuillez entrer un prénom valide'
+            : firstName.nextElementSibling.innerHTML = ''
+
+        // declaration puis vérification  de la saisie de l'adresse
+        let address = document.querySelector('#address');
+        !address.value.match(addressRegEx)
+            ? address.nextElementSibling.innerHTML = 'veuillez entrer une adresse valide'
+            : address.nextElementSibling.innerHTML = ''
+
+        // declaration puis vérification  de la saisie du code postal et de la ville
+        let city = document.querySelector('#city');
+        !city.value.match(cityRegEx)
+            ? city.nextElementSibling.innerHTML = 'veuillez entrer un code postal et une ville valides'
+            : city.nextElementSibling.innerHTML = ''
+
+        // declaration puis vérification  de la saisie de l'adresse mail
+        !email.value.match(emailRegEx)
+            ? email.nextElementSibling.innerHTML = 'veuillez entrer une adresse email valide'
+            : email.nextElementSibling.innerHTML = ''
+    });
