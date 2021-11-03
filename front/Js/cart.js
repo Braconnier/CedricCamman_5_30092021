@@ -1,5 +1,6 @@
 // recuperation du panier et des produits pour manipulations  --------------------------------------------------------------------------------------------------------------------------------------------------
 let cart = JSON.parse(localStorage.getItem('canap'));
+
 let products = JSON.parse(sessionStorage.getItem('products'));
 
 // remet le titre de la page en français
@@ -8,61 +9,10 @@ document.querySelector('title').innerHTML = 'Panier';
 // verification de la presence ou de la validité du panier
 checkCart();
 
-// recupere les produits renvoyés par l'api
-getProduct();
-
 // fonction de rendu de la page
 render();
 
-// fonction de suppression d'u produit du panier
-deleteMe(cart);
 
-//  fonction de mise à jour de la quantité total des produits du panier
-updateQte(cart);
-
-//  fonction de modification de la quantité D'un produit
-modQte(cart);
-
-//  fonction de mise à jour  du prix totall du panier
-updatePrice(cart);
-
-
-
-// interroge l'api pour avoir la liste des produits
-function getProduct() {
-    fetch('http://localhost:3000/api/products')
-
-        //recupère les données au format json (catalogue des produits)
-        .then(response => response.json()
-
-            //parcourt le document pour créer les objets product
-            .then(products => {
-
-
-                // constructeur du produit
-                class Product {
-
-                    // construit le produit si on a un objet json, avec les attributs de celui-ci
-                    constructor(jsonProduct) {
-                        jsonProduct && Object.assign(this, jsonProduct);
-                    }
-                }
-                // boucle pour implémenter les objets dans la page
-                for (product of products) {
-
-                    // construit le produit en utilisant la class Product
-                    product = new Product(product);
-
-                    // ajout du catalogue des produits au sessionStorage pour utilisation ultérieure
-                    sessionStorage.setItem('products', JSON.stringify(products));
-                }
-
-                //recupere les potentielles erreurs sur la recuperation des produits 
-            }).catch(err => console.log(err))
-
-            // recupere les potentielles erreurs sur l'appel de l'api 
-        ).catch(err => console.log(err))
-}
 
 // verification de la presence ou de la validité du panier, renvoie vers la page d'accueil si le panier est vide, vide le locaStorage le cas echeant
 function checkCart() {
@@ -81,8 +31,24 @@ function checkCart() {
     }
 }
 
+// interroge l'api pour avoir la liste des produits
+async function getProduct() {
+    await fetch('http://localhost:3000/api/products')
+
+        //recupère les données au format json (catalogue des produits)
+        .then(response => response.json()
+
+            //parcourt le document pour créer les objets product
+            .then(jsonObject => {
+                sessionStorage.setItem('products', JSON.stringify(jsonObject));
+                products = jsonObject;
+            }))
+}
+
+
 // fonction de rendu de la page du panier
-function render() {
+async function render() {
+    await getProduct();
 
     // declaration html pour les produits du panier
     let html = '';
@@ -97,7 +63,7 @@ function render() {
             if (canap.id === product._id) {
 
                 // appel de la foncion de genretaion de l'HTML
-                generateHTML(product, canap);
+                generateHTML();
 
                 // Concatene le HTML pour le rendu 
                 html += addedHtml;
@@ -107,10 +73,24 @@ function render() {
 
     // rendu final de l'HTML du panier
     document.querySelector('#cart__items').innerHTML = html;
+
+    // fonction de suppression d'u produit du panier
+    deleteItem();
+
+    //  fonction de modification de la quantité D'un produit
+    modifyQte();
+
+    //  fonction de mise à jour de la quantité total des produits du panier
+    updateQte();
+
+    //  fonction de mise à jour  du prix totall du panier
+    updatePrice();
+
+
 }
 
 // géneration de l'HTML par tour de boucle (canap dans le caddie)
-function generateHTML(product, canap) {
+function generateHTML() {
 
     // information de l'HTML
     addedHtml = `<article class='cart__item' data-id='${product._id}'>
@@ -135,35 +115,18 @@ function generateHTML(product, canap) {
             </article>`;
 }
 
-// function de mise à jour de la quantité totale de ppoduits dans le panier
-function updateQte(cart) {
-
-    // initialisation de la vaible Qte
-    let totalQte = 0;
-
-    // pour chaque produit dans le panier
-    cart.forEach((canap) => {
-
-        // on les ajoutent entre eux
-        totalQte += parseInt(canap.qte);
-
-    })
-
-    // injection de l'HTML dans la page
-    document.querySelector('#totalQuantity').innerHTML = totalQte;
-}
 
 // function de modification de la quantité d'un produit du panier
-function modQte(cart) {
+function modifyQte() {
 
     // declaration de la variable pour determiner la position de l'eventListener qui correspond à la position de l'index dans le panier
-    let qteTable = document.querySelectorAll('.itemQuantity');
+    let qteSelectors = document.querySelectorAll('.itemQuantity');
 
     // boucle pour retrouver le bon produit du panier
-    for (let j = 0; j < qteTable.length; j++) {
+    for (let j = 0; j < qteSelectors.length; j++) {
 
         // ajout de l'eventListener
-        qteTable[j].addEventListener('change', (e) => {
+        qteSelectors[j].addEventListener('change', (e) => {
 
             // declaration du produit avec la quantité modifiée
             let modifiedCanap = {
@@ -189,7 +152,7 @@ function modQte(cart) {
 }
 
 // fonction de suppression d'un produit du panier
-function deleteMe(cart) {
+function deleteItem() {
 
     // declaration de la variable pour trouver le bon produit
     let deleteTable = document.querySelectorAll('.deleteItem');
@@ -198,7 +161,7 @@ function deleteMe(cart) {
     for (let i = 0; i < deleteTable.length; i++) {
 
         // gestionnaire de suppression d'article
-        deleteTable[i].addEventListener('click', () => {
+        deleteTable[i].addEventListener('click', (e) => {
 
             // suppression de l'article dans le panier
             cart.splice(i, 1)
@@ -221,15 +184,34 @@ function deleteMe(cart) {
             // mise à jour du prix total du panier
             updatePrice(cart)
 
-            // on vverifie le panier si il est toujours peuplé (dernier article supprimé)
-            checkCart()
+            // on verifie le panier si il est toujours peuplé (dernier article supprimé)
+            checkCart(cart);
+
+            render();
         })
     }
+}
 
+// function de mise à jour de la quantité totale de ppoduits dans le panier
+function updateQte() {
+
+    // initialisation de la vaible Qte
+    let totalQte = 0;
+
+    // pour chaque produit dans le panier
+    cart.forEach((canap) => {
+
+        // on les ajoutent entre eux
+        totalQte += parseInt(canap.qte);
+
+    })
+
+    // injection de l'HTML dans la page
+    document.querySelector('#totalQuantity').innerHTML = totalQte;
 }
 
 // mise à jour du prix total
-function updatePrice(cart) {
+function updatePrice() {
 
     // initialistaion de la variable
     let totalByProduct = 0;
