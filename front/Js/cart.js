@@ -1,5 +1,7 @@
-// recuperation du panier et des produits pour manipulations  --------------------------------------------------------------------------------------------------------------------------------------------------
+// recuperation du panier et tri des produits pour manipulations  --------------------------------------------------------------------------------------------------------------------------------------------------
 let cart = JSON.parse(localStorage.getItem('canap'));
+cart.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+
 let products = JSON.parse(sessionStorage.getItem('products'));
 
 // suppression de la clé product dans le sessionStorage devenue inutile
