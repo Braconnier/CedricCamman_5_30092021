@@ -8,7 +8,7 @@ let urlProductId = 'http://localhost:3000/api/products' + `/${productId}`;
 // recuperation du panier pour manipulations  --------------------------------------------------------------------------------------------------------------------------------------------------
 let cart = JSON.parse(localStorage.getItem('canap'));
 
-// constructeur
+// constructeur de produit
 class Product {
   constructor(json) {
     json && Object.assign(this, json);
@@ -48,15 +48,13 @@ let getProduct = async function () {
 // affichage du produit par Id  ----------------------------------------------------------------------------------------------------------------------------------------
 getProduct();
 
-// on affiche les elements du produit ----------------------------------------------------------------------------------------------------------------------------------
+// affiche les elements du produit ----------------------------------------------------------------------------------------------------------------------------------
 function render() {
   // change le titre la page
   document.querySelector('title').innerText = product.name;
 
   // affichage image et alt
-  document.querySelector(
-    '.item__img'
-  ).innerHTML = `<img src='${product.imageUrl}' alt='${product.altTxt}'>`;
+  document.querySelector('.item__img').innerHTML = `<img src='${product.imageUrl}' alt='${product.altTxt}'>`;
 
   // affichage nom
   document.querySelector('#title').innerText = product.name;
@@ -70,58 +68,60 @@ function render() {
   // recuperation du noeud d'options des couleurs
   let options = document.querySelector('#colors');
 
-  // on defini le tableau colors
+  // defini le tableau d'options des couleurs
   let colors = product.colors;
 
-  // on declare l'HTML
+  // declare l'HTML
   let htmlOptions = '';
 
-  // on boucle pour recuperer les options de couleurs
+  // boucle pour recuperer les options de couleurs
   colors.forEach((color) => {
     // on concatene les options
     htmlOptions += `<option value='${color}'>${color}</option>`;
   });
 
-  // on affiche les options des couleurs
+  // affiche les options des couleurs
   options.innerHTML += htmlOptions;
 }
 
 // ecouteur des options de couleurs ------------------------------------------------------------------------------------------------------------------------------------------
-let selectedColor = document
-  .querySelector('#colors')
-  .addEventListener('change', function (e) {
-    // si non valide, renvoie faux
-    if (e.target.innerText === '--SVP, choisissez une couleur --') {
-      return false;
+let selectedColor = document.querySelector('#colors').addEventListener('change', function (e) {
 
-      //si valide, renvoie vrai et la valeur de la couleur selectionée
-    } else {
-      selectedColor = e.target.value;
+  // si non valide, renvoie faux
+  if (e.target.innerText === '--SVP, choisissez une couleur --') {
+    return false;
 
-      return true;
-    }
-  });
+    //si valide, renvoie vrai et la valeur de la couleur selectionée
+  } else {
+    selectedColor = e.target.value;
+
+    return true;
+  }
+});
 
 // ecouteur des options de quantiité  ----------------------------------------------------------------------------------------------------------------------------------------------  
-let qte = document
-  .querySelector('#quantity')
-  .addEventListener('change', function (e) {
-    // si non valide(inferieur ou egal 0 ou supérieur à 100)  renvoie faux
-    if (e.target.value <= 0 || e.target.value > 100) {
-      return false;
+let qte = document.querySelector('#quantity').addEventListener('change', function (e) {
 
-      // si valide, renvoie vrai et la quantité selectionée
-    } else {
-      qte = e.target.value;
+  // si non valide(inferieur ou egal 0 ou supérieur à 100)  renvoie faux
+  if (e.target.value <= 0 || e.target.value > 100) {
 
-      return true;
-    }
-  });
+    return false;
+
+    // si valide, renvoie vrai et la quantité selectionée
+  } else {
+
+    qte = e.target.value;
+
+    return true;
+  }
+});
 
 // ecouteur du bouton de commande ------------------------------------------------------------------------------------------------------------------------------------------------------  
 document.querySelector('#addToCart').addEventListener('click', function () {
+
   // si couleur et quantité valides, enregistre l'Id, la couleur et la quantité selectionée
   if (selectedColor && qte) {
+
     // recupere les données du produit de la page
     product = JSON.parse(sessionStorage.getItem('product'));
 
@@ -131,6 +131,7 @@ document.querySelector('#addToCart').addEventListener('click', function () {
 
     // construction du produit a envoyer au panier
     canap = {
+
       id: productId,
 
       selectedColor: selectedColor,
@@ -143,14 +144,18 @@ document.querySelector('#addToCart').addEventListener('click', function () {
 
     // alert en cas de données couleurs ou quantité invalide
   } else if (!selectedColor) {
+
     alert('veuillez choisir une couleur');
+
   } else if (!qte) {
+
     alert('veuillez choisir une quantité');
   }
 });
 
 // passer l'article au panier ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 let pushCanap = () => {
+
   cart.push(canap);
 
   localStorage.setItem('canap', JSON.stringify(cart));
@@ -160,12 +165,15 @@ let pushCanap = () => {
 
 // fonction de commande -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 function sendToCart() {
+
   // interroge le localStorage et verifie la presence de la clé canap
   if (localStorage.getItem('canap')) {
+
     checkSiblings();
 
     // si le localStorage est vide, alors on crée la clé canap et on la peuple avec le canap présent
   } else {
+
     cart = [];
 
     pushCanap();
@@ -174,6 +182,7 @@ function sendToCart() {
 
 // check des doublons -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 function checkSiblings() {
+
   // filtrage par id produit
   let found = cart.filter((element) => element.id === canap.id);
 
@@ -219,7 +228,8 @@ function checkSiblings() {
     if (
       // popup de confirmation
       confirm('même article mais d\'une couleur différente. Commander celui-ci ?')) {
-      // sur confirmation, passe le produit au panier
+
+      // sur confirmation, passe le produit au panier, sinon ne fait rien
       pushCanap();
     }
     // aucune correspondance, passage au panier 

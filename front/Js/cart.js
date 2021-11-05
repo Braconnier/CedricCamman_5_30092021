@@ -228,7 +228,7 @@ function updatePrice() {
             // sur egalité d'Id
             if (canap.id === product._id) {
 
-                // additionne le prix unitaire multipliés par la quantité
+                // additionne le prix unitaire multiplié par la quantité
                 totalByProduct += parseInt(canap.qte) * parseInt(product.price);
             }
         }
@@ -320,39 +320,40 @@ document.querySelector('.cart__order input[type="submit"]').addEventListener('cl
         city.value.match(cityRegEx) &&
         email.value.match(emailRegEx)
     ) {
-        order()
+        order(data)
     }
 
-    // fonction de passage de la commande
-    function order() {
-
-        // on interroge l'api avec la methode POST pour envoyer des données
-        fetch("http://localhost:3000/api/products/order",
-            {
-                method: 'POST',
-
-                // precise qu'il s'agit de données au format JSON
-                headers: {
-                    'Accept': 'application/json',
-                    "Content-Type": "application/json"
-                },
-
-                // transforme le corps de données au format JSON
-                body: JSON.stringify(data),
-            })
-            .then((response) => response.json())
-            .then((data) => {
-                // une fois que tout est bon, renvoie vers la page de confirmation avec l'identifiant de celle-ci
-                document.location.href = `confirmation.html?order=${data.orderId}`;
-            }).catch((err) => {
-                alert(err.message);
-
-            }).catch((err) => {
-                alert(err.message);
-
-            })
-    }
 })
+
+// fonction de passage de la commande
+function order(data) {
+
+    // on interroge l'api avec la methode POST pour envoyer des données
+    fetch("http://localhost:3000/api/products/order",
+        {
+            method: 'POST',
+
+            // precise qu'il s'agit de données au format JSON
+            headers: {
+                'Accept': 'application/json',
+                "Content-Type": "application/json"
+            },
+
+            // transforme le corps de données au format JSON
+            body: JSON.stringify(data),
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            // une fois que tout est bon, renvoie vers la page de confirmation avec l'identifiant de celle-ci
+            document.location.href = `confirmation.html?order=${data.orderId}`;
+        }).catch((err) => {
+            alert(err.message);
+
+        }).catch((err) => {
+            alert(err.message);
+
+        })
+}
 
 
 

@@ -17,30 +17,36 @@ fetch('http://localhost:3000/api/products')
         //parcourt le document pour créer les objets product
         .then(products => {
 
-            //declare l'HTML 
-            let html = "";
-
-            //boucle pour implémenter les objets dans la page
-            for (product of products) {
-
-                //construit le produit en utilisant la class Product
-                product = new Product(product)
-
-                //prepare l'affichage d'un produit
-                html += `<a href="./product.html?id=${product._id}">
-                             <article>
-                                <img src="${product.imageUrl}" alt="${product.altTxt}">
-                                <h3 class="productName">${product.name}</h3>
-                                <p class="productDescription">${product.description}</p>
-                            </article>
-                        </a>`
-
-            }
-            //affiche le resultat de la boucle (resultat final)
-            document.getElementById('items').innerHTML = html;
+            render(products);
 
             //recupere les potentielles erreurs sur la recuperation des produits 
         }).catch(err => console.log(err))
 
         // on recupere les potentielles erreurs sur l'appel de l'api 
     ).catch(err => console.log(err))
+
+
+// generation et rendu de la page produits
+function render(products) {
+    //declare l'HTML 
+    let html = "";
+
+    //boucle pour implémenter les objets dans la page
+    for (product of products) {
+
+        //construit le produit en utilisant la class Product
+        product = new Product(product)
+
+        //prepare l'affichage d'un produit
+        html += `<a href="./product.html?id=${product._id}">
+                         <article>
+                            <img src="${product.imageUrl}" alt="${product.altTxt}">
+                            <h3 class="productName">${product.name}</h3>
+                            <p class="productDescription">${product.description}</p>
+                        </article>
+                    </a>`
+
+    }
+    //affiche le resultat de la boucle (resultat final)
+    document.getElementById('items').innerHTML = html;
+}
