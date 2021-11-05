@@ -1,18 +1,15 @@
 // recuperation du panier et des produits pour manipulations  --------------------------------------------------------------------------------------------------------------------------------------------------
 let cart = JSON.parse(localStorage.getItem('canap'));
-
 let products = JSON.parse(sessionStorage.getItem('products'));
 
-// remet le titre de la page en français
-document.querySelector('title').innerHTML = 'Panier';
+// suppression de la clé product dans le sessionStorage devenue inutile
+sessionStorage.removeItem('product')
 
 // verification de la presence ou de la validité du panier
 checkCart();
 
 // fonction de rendu de la page
 render();
-
-
 
 // verification de la presence ou de la validité du panier, renvoie vers la page d'accueil si le panier est vide, vide le locaStorage le cas echeant    ----------------------------------------------------------
 function checkCart() {
@@ -98,18 +95,18 @@ async function render() {
 function generateHTML() {
 
     // information de l'HTML
-    addedHtml = `<article class='cart__item' data-id='${product._id}'>
+    addedHtml = `<article class='cart__item' data-id='${product._id}data-color='${canap.selectedColor}'>
                 <div class='cart__item__img'>
                     <img src='${product.imageUrl}' alt='${product.altTxt}'>
                 </div>
                 <div class='cart__item__content'>
-                    <div class='cart__item__content__titlePrice'>
+                <div class="cart__item__content__description">
                         <h2>${product.name}</h2>
+                        <p>${canap.selectedColor}</p>
                         <p>${(product.price / 10).toFixed(2)} €</p>
                     </div>
                     <div class='cart__item__content__settings'>
                         <div class='cart__item__content__settings__quantity'>
-                            <p>Couleur: ${canap.selectedColor} </p>
                             <input type='number' class='itemQuantity' name='itemQuantity' min='1' max='100' value='${canap.qte}'>
                         </div>
                         <div class='cart__item__content__settings__delete'>
@@ -192,6 +189,7 @@ function deleteItem() {
             // on verifie le panier si il est toujours peuplé (dernier article supprimé)
             checkCart(cart);
 
+            // regenere la page pour bien prendre en compte la modification du panier
             render();
         })
     }
@@ -243,55 +241,119 @@ function updatePrice() {
 
 
 // gestion de validité formulaire --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+// 
 // selection du bouton submit (validation du panier pour commande)
-document
-    .querySelector('.cart__order input[type="submit"]')
-    .addEventListener('click', function (e) {
+document.querySelector('.cart__order input[type="submit"]').addEventListener('click', function (e) {
 
-        // on evite le comportement par defaut (recargement de la page)
-        e.preventDefault();
+    // on evite le comportement par defaut (recargement de la page)
+    e.preventDefault();
 
-        //  declaration des regEx
+    //  declaration des regEx
+    // 
+    // commence, fini et ne comporte que des lettres prise en charge des accents apostrophes et tirets, ne prend pas la casse en compte
+    let nameRegEx = /^[a-z\-'àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšž]+$/i
 
-        // commence, fini et ne comporte que des lettres prise en charge des accents apostrophes et tirets, ne prend pas la casse en compte
-        let nameRegEx = /^[a-z\-'àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšž]+$/i
+    // commence, fini et ne comporte que des chiffres et des lettres, prise en charge des accents apostrophes et tirets, ne prend pas la casse en compte
+    let addressRegEx = /^[a-z0-9\s,'-àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšž]*$/i
 
-        // commence, fini et ne comporte que des chiffres et des lettres, prise en charge des accents apostrophes et tirets, ne prend pas la casse en compte
-        let addressRegEx = /^[a-z0-9\s,'-àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšž]*$/i
+    // commence par 5 chiffres suivi d'un espace, la seconde partie ne comporte que des lettres, prise en charge des accents, apostrophes et espaces, fini par des lettres 
+    let cityRegEx = /^[0-9]{5}\s[a-z\,.\-\sàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšž]+$/i
 
-        // commence par 5 chiffres suivi d'un espace, la seconde partie ne comporte que des lettres, prise en charge des accents, apostrophes et espaces, fini par des lettres 
-        let cityRegEx = /^[0-9]{5}\s[a-z\,.\-\sàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšž]+$/i
+    // commence par n'importe quel caractere "word" (aplhanumerique et underscore), suivi de @ puis de n'importe quel 'mot'( ? = lazy mode), puis un point suivi de 2 ou 3 lettres
+    let emailRegEx = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/
 
-        // commence par n'importe quel caractere "word" (aplhanumerique et underscore), suivi de @ puis de n'importe quel 'mot'( ? = lazy mode), puis un point suivi de 2 ou 3 lettres
-        let emailRegEx = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/
+    // declaration puis vérification  de la saisie du prénom
+    let firstName = document.querySelector('#firstName');
+    !firstName.value.match(nameRegEx)
+        ? firstName.nextElementSibling.innerHTML = 'veuillez entrer un nom valide'
+        : firstName.nextElementSibling.innerHTML = ''
 
-        // declaration puis vérification  de la saisie du prénom
-        let firstName = document.querySelector('#firstName');
-        !firstName.value.match(nameRegEx)
-            ? firstName.nextElementSibling.innerHTML = 'veuillez entrer un nom valide'
-            : firstName.nextElementSibling.innerHTML = ''
+    // declaration puis vérification  de la saisie du nom
+    let lastName = document.querySelector('#lastName');
+    !lastName.value.match(nameRegEx)
+        ? firstName.nextElementSibling.innerHTML = 'veuillez entrer un prénom valide'
+        : firstName.nextElementSibling.innerHTML = ''
 
-        // declaration puis vérification  de la saisie du nom
-        let lastName = document.querySelector('#lastName');
-        !lastName.value.match(nameRegEx)
-            ? firstName.nextElementSibling.innerHTML = 'veuillez entrer un prénom valide'
-            : firstName.nextElementSibling.innerHTML = ''
+    // declaration puis vérification  de la saisie de l'adresse
+    let address = document.querySelector('#address');
+    !address.value.match(addressRegEx)
+        ? address.nextElementSibling.innerHTML = 'veuillez entrer une adresse valide'
+        : address.nextElementSibling.innerHTML = ''
 
-        // declaration puis vérification  de la saisie de l'adresse
-        let address = document.querySelector('#address');
-        !address.value.match(addressRegEx)
-            ? address.nextElementSibling.innerHTML = 'veuillez entrer une adresse valide'
-            : address.nextElementSibling.innerHTML = ''
+    // declaration puis vérification  de la saisie du code postal et de la ville
+    let city = document.querySelector('#city');
+    !city.value.match(cityRegEx)
+        ? city.nextElementSibling.innerHTML = 'veuillez entrer un code postal et une ville valides'
+        : city.nextElementSibling.innerHTML = ''
 
-        // declaration puis vérification  de la saisie du code postal et de la ville
-        let city = document.querySelector('#city');
-        !city.value.match(cityRegEx)
-            ? city.nextElementSibling.innerHTML = 'veuillez entrer un code postal et une ville valides'
-            : city.nextElementSibling.innerHTML = ''
+    // declaration puis vérification  de la saisie de l'adresse mail
+    !email.value.match(emailRegEx)
+        ? email.nextElementSibling.innerHTML = 'veuillez entrer une adresse email valide'
+        : email.nextElementSibling.innerHTML = ''
 
-        // declaration puis vérification  de la saisie de l'adresse mail
-        !email.value.match(emailRegEx)
-            ? email.nextElementSibling.innerHTML = 'veuillez entrer une adresse email valide'
-            : email.nextElementSibling.innerHTML = ''
+    // recuperation de la liste des id produits dans le panier 
+    let cartIds = cart.map((cart) => {
+
+        return cart.id;
+
     });
+
+    // construction du corps de données a encoyer a l'api
+    let data = {
+
+        contact: {
+            firstName: firstName.value,
+            lastName: lastName.value,
+            address: address.value,
+            city: city.value,
+            email: email.value
+        },
+        products: cartIds
+
+    }
+
+    // si toutes les données de contact saisies par l'utilisateur sont valides, on passe la commande
+    if (
+        firstName.value.match(nameRegEx) &&
+        lastName.value.match(nameRegEx) &&
+        address.value.match(addressRegEx) &&
+        city.value.match(cityRegEx) &&
+        email.value.match(emailRegEx)
+    ) {
+        order()
+    }
+
+    // fonction de passage de la commande
+    function order() {
+
+        // on interroge l'api avec la methode POST pour envoyer des données
+        fetch("http://localhost:3000/api/products/order",
+            {
+                method: 'POST',
+
+                // precise qu'il s'agit de données au format JSON
+                headers: {
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json"
+                },
+
+                // transforme le corps de données au format JSON
+                body: JSON.stringify(data),
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                // une fois que tout est bon, renvoie vers la page de confirmation avec l'identifiant de celle-ci
+                document.location.href = `confirmation.html?order=${data.orderId}`;
+            }).catch((err) => {
+                alert(err.message);
+
+            }).catch((err) => {
+                alert(err.message);
+
+            })
+    }
+})
+
+
+
+
