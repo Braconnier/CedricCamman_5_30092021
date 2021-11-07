@@ -13,7 +13,8 @@ Le but est d'écrire un code javascript pour exploiter l'architecture fournie et
 le site est constitué de 4 pages.
 
 - Une page index.html qui doit comporter la liste des produits retourné par l'api.
-    cette page affiche la totalité des produits retournés ainsi que leurs informations relatives sont utilisées l'URL de l'image, le texte altenatif pour la balise img, le nom et la description de chaque produit.
+    cette page affiche la totalité des produits retournés ainsi que leurs informations relatives.
+    Sont utilisées l'URL de l'image, le texte altenatif pour la balise img, le nom et la description de chaque produit.
 
 - une page product.html qui affiche un produit selon son id l'api est interrogée pour recupérer un seul produit.
     cette page affiche le produit selectionné. sont utilisés l'URL de l'image, le texte alternatif, le nom, la description, le prix du produit ainsi que les options de couleurs.
