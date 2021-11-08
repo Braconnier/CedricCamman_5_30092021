@@ -10,7 +10,9 @@ let cart = JSON.parse(localStorage.getItem('canap'));
 
 // constructeur de produit
 class Product {
+
   constructor(json) {
+
     json && Object.assign(this, json);
   }
 }
@@ -76,6 +78,7 @@ function render() {
 
   // boucle pour recuperer les options de couleurs
   colors.forEach((color) => {
+
     // on concatene les options
     htmlOptions += `<option value='${color}'>${color}</option>`;
   });
@@ -89,10 +92,12 @@ let selectedColor = document.querySelector('#colors').addEventListener('change',
 
   // si non valide, renvoie faux
   if (e.target.innerText === '--SVP, choisissez une couleur --') {
+
     return false;
 
     //si valide, renvoie vrai et la valeur de la couleur selectionée
   } else {
+
     selectedColor = e.target.value;
 
     return true;
@@ -226,6 +231,7 @@ function checkSiblings() {
   } else if (!twin && found.length > 0) {
 
     if (
+
       // popup de confirmation
       confirm('même article mais d\'une couleur différente. Commander celui-ci ?')) {
 
@@ -234,6 +240,7 @@ function checkSiblings() {
     }
     // aucune correspondance, passage au panier 
   } else {
+
     pushCanap();
   }
 

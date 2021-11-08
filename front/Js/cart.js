@@ -134,8 +134,11 @@ function modifyQte() {
 
             // declaration du produit avec la quantité modifiée
             let modifiedCanap = {
+
                 id: cart[j].id,
+
                 selectedColor: cart[j].selectedColor,
+
                 // on doit parseINT pour additionner sinon, on concatenerait les chaines de caracteres
                 qte: e.target.value
             }
@@ -266,31 +269,45 @@ document.querySelector('.cart__order input[type="submit"]').addEventListener('cl
 
     // declaration puis vérification  de la saisie du prénom
     let firstName = document.querySelector('#firstName');
+
     !firstName.value.match(nameRegEx)
+
         ? firstName.nextElementSibling.innerHTML = 'veuillez entrer un nom valide'
+
         : firstName.nextElementSibling.innerHTML = ''
 
     // declaration puis vérification  de la saisie du nom
     let lastName = document.querySelector('#lastName');
+
     !lastName.value.match(nameRegEx)
+
         ? firstName.nextElementSibling.innerHTML = 'veuillez entrer un prénom valide'
+
         : firstName.nextElementSibling.innerHTML = ''
 
     // declaration puis vérification  de la saisie de l'adresse
     let address = document.querySelector('#address');
+
     !address.value.match(addressRegEx)
+
         ? address.nextElementSibling.innerHTML = 'veuillez entrer une adresse valide'
+
         : address.nextElementSibling.innerHTML = ''
 
     // declaration puis vérification  de la saisie du code postal et de la ville
     let city = document.querySelector('#city');
+
     !city.value.match(cityRegEx)
+
         ? city.nextElementSibling.innerHTML = 'veuillez entrer un code postal et une ville valides'
+
         : city.nextElementSibling.innerHTML = ''
 
     // declaration puis vérification  de la saisie de l'adresse mail
     !email.value.match(emailRegEx)
+
         ? email.nextElementSibling.innerHTML = 'veuillez entrer une adresse email valide'
+
         : email.nextElementSibling.innerHTML = ''
 
     // recuperation de la liste des id produits dans le panier 
@@ -304,24 +321,37 @@ document.querySelector('.cart__order input[type="submit"]').addEventListener('cl
     let data = {
 
         contact: {
+
             firstName: firstName.value,
+
             lastName: lastName.value,
+
             address: address.value,
+
             city: city.value,
+
             email: email.value
         },
+
         products: cartIds
 
     }
 
     // si toutes les données de contact saisies par l'utilisateur sont valides, on passe la commande
     if (
+
         firstName.value.match(nameRegEx) &&
+
         lastName.value.match(nameRegEx) &&
+
         address.value.match(addressRegEx) &&
+
         city.value.match(cityRegEx) &&
+
         email.value.match(emailRegEx)
+
     ) {
+
         order(data)
     }
 
@@ -337,21 +367,29 @@ function order(data) {
 
             // precise qu'il s'agit de données au format JSON
             headers: {
+
                 'Accept': 'application/json',
+
                 "Content-Type": "application/json"
             },
 
             // transforme le corps de données au format JSON
             body: JSON.stringify(data),
         })
+
         .then((response) => response.json())
+
         .then((data) => {
+
             // une fois que tout est bon, renvoie vers la page de confirmation avec l'identifiant de celle-ci
             document.location.href = `confirmation.html?order=${data.orderId}`;
+
         }).catch((err) => {
+
             alert(err.message);
 
         }).catch((err) => {
+
             alert(err.message);
 
         })

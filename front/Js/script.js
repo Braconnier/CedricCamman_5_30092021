@@ -3,6 +3,7 @@ class Product {
 
     //construit le produit si on a un objet json avec les attributs de celui-ci
     constructor(jsonProduct) {
+
         jsonProduct && Object.assign(this, jsonProduct)
     }
 }
@@ -28,6 +29,7 @@ fetch('http://localhost:3000/api/products')
 
 // generation et rendu de la page produits
 function render(products) {
+
     //declare l'HTML 
     let html = "";
 
