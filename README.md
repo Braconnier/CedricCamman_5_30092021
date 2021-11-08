@@ -21,9 +21,7 @@ Le site est constitué de 4 pages.
 
     Elle donne la possibilité à l'utilisateur de choisir la ou les options de couleurs souhaitées ainsi que la quantité à commander.
 
-    les informations enregistrées dans le localStorage sont :   - id
-                                                                - options de couleurs
-                                                                - quantité
+    les informations enregistrées dans le localStorage sont :   id, options de couleurs et quantité.
 
 - une page cart.html qui affiche le panier trié par id de produit.
 
