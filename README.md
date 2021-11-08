@@ -16,8 +16,8 @@ Le site est constitué de 4 pages.
     Cette page affiche la totalité des produits retournés ainsi que leurs informations relatives.
     Sont utilisées l'URL de l'image, le texte alternatif pour la balise img, le nom et la description de chaque produit.
 
-- Une page product.html qui affiche un produit selon son id .L'api est interrogée pour recupérer un seul produit.
-    Cette page affiche le produit selectionné. sont utilisés l'URL de l'image, le texte alternatif, le nom, la description, le prix du produit ainsi que les options de couleurs.
+- Une page product.html qui affiche un produit selon son id. L'api est interrogée pour recupérer un seul produit.
+    Cette page affiche le produit selectionné. Sont utilisés l'URL de l'image, le texte alternatif, le nom, la description, le prix du produit ainsi que les options de couleurs.
 
     Elle donne la possibilité à l'utilisateur de choisir la ou les options de couleurs souhaitées ainsi que la quantité à commander.
 
