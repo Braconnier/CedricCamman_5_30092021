@@ -8,7 +8,7 @@ Ecrire le javascript front-end pour un site de e-comerce
 
 Le Back-end du site est fourni, ainsi que l'HTML et le CSS du front-end.
 
-Le but est d'écrire un code javascript pour exploiter l'architecture fournie et de respecter le cahier des charges (voir : [plan de tests d'accepation]).
+Le but est d'écrire un code javascript pour exploiter l'architecture fournie et de respecter le cahier des charges (voir : [plan de tests d'accepation](https://github.com/Braconnier/CedricCamman_5_30092021/blob/master/P5_camman_plan_test.pdf)).
 
 Le site est constitué de 4 pages.
 
