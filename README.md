@@ -39,3 +39,17 @@ Le site est constitué de 4 pages.
 ### spécificités ###
 
 L'utilisation de framework ou de librairies est proscrite, seule Javascript "vanilla" est autorisé.
+
+
+
+### Prérequis pour le Back end ###
+
+Node et `npm` sont requis.
+
+### Installation du Back end ###
+
+Clonez ce dépôt. Depuis le dossier "back" du projet, exécutez `npm install`.
+Vous pouvez alors lancer le serveur avec `Node server`.
+Le serveur doit fonctionner sur `localhost` avec le port par défaut `3000`.
+Si le serveur s'exécute sur un autre port pour une raison quelconque, celui-ci est indiqué dans la
+console au démarrage du serveur, par ex. `Listening on port 3001`.
