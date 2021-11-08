@@ -16,12 +16,14 @@ Le site est constitué de 4 pages.
     Cette page affiche la totalité des produits retournés ainsi que leurs informations relatives.
     Sont utilisées l'URL de l'image, le texte alternatif pour la balise img, le nom et la description de chaque produit.
 
+
 - Une page product.html qui affiche un produit selon son id. L'api est interrogée pour recupérer un seul produit.
     Cette page affiche le produit selectionné. Sont utilisés l'URL de l'image, le texte alternatif, le nom, la description, le prix du produit ainsi que les options de couleurs.
 
     Elle donne la possibilité à l'utilisateur de choisir la ou les options de couleurs souhaitées ainsi que la quantité à commander.
 
     les informations enregistrées dans le localStorage sont :   id, options de couleurs et quantité.
+
 
 - une page cart.html qui affiche le panier trié par id de produit.
 
@@ -31,6 +33,7 @@ Le site est constitué de 4 pages.
     Elle comporte un formulaire de contact dans lequel les informations saisies sont validées grace à l'utilisation d'expressions regulières.
 
     Le bouton "commander !" doit envoyer les informations de contact ainsi que les id des produits dans le panier et renvoyer vers la page de confirmation de commande.
+    
 
 - Une page confirmation.html s'affiche avec le numéro de commande lorsque la requète précédemment faite est correcte.
 
