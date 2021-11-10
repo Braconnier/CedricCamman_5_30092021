@@ -4,7 +4,7 @@ Il s'agit du Projet 5 de la formation developpeur web d'Open Classrooms
 ### Idée générale ###
 
 Ecrire le javascript front-end pour un site de e-comerce
-### Architecture et foncionnement ###
+### Architecture et fonctionnement ###
 
 Le Back-end du site est fourni, ainsi que l'HTML et le CSS du front-end.
 
