@@ -1,6 +1,5 @@
 // recuperation du panier et tri des produits pour manipulations  --------------------------------------------------------------------------------------------------------------------------------------------------
 let cart = JSON.parse(localStorage.getItem('canap'));
-cart.sort((a, b) => parseInt(a.id, 16) - parseInt(b.id, 16));
 
 let products = JSON.parse(sessionStorage.getItem('products'));
 
@@ -27,6 +26,9 @@ function checkCart() {
 
         // renvoie vers la page d'accueil
         window.location = '/front/html';
+    } else {
+        cart.sort((a, b) => parseInt(a.id, 16) - parseInt(b.id, 16));
+
     }
 }
 
