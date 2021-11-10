@@ -259,7 +259,7 @@ document.querySelector('.cart__order input[type="submit"]').addEventListener('cl
     let nameRegEx = /^[a-z\-'àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšž]+$/i
 
     // commence, fini et ne comporte que des chiffres et des lettres, prise en charge des accents apostrophes et tirets, ne prend pas la casse en compte
-    let addressRegEx = /^[a-z0-9\s,'-àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšž]*$/i
+    let addressRegEx = /^[a-z0-9\s,'\-àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšž]*$/gi
 
     // commence par 5 chiffres suivi d'un espace, la seconde partie ne comporte que des lettres, prise en charge des accents, apostrophes et espaces, fini par des lettres 
     let cityRegEx = /^[0-9]{5}\s[a-z\,.\-\sàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšž]+$/i
@@ -281,9 +281,9 @@ document.querySelector('.cart__order input[type="submit"]').addEventListener('cl
 
     !lastName.value.match(nameRegEx)
 
-        ? firstName.nextElementSibling.innerHTML = 'veuillez entrer un prénom valide'
+        ? lastName.nextElementSibling.innerHTML = 'veuillez entrer un prénom valide'
 
-        : firstName.nextElementSibling.innerHTML = ''
+        : lastName.nextElementSibling.innerHTML = ''
 
     // declaration puis vérification  de la saisie de l'adresse
     let address = document.querySelector('#address');
