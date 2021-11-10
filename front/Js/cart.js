@@ -1,6 +1,7 @@
 // recuperation du panier et tri des produits pour manipulations  --------------------------------------------------------------------------------------------------------------------------------------------------
 let cart = JSON.parse(localStorage.getItem('canap'));
-cart.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+cart.sort((a, b) => parseInt(a.id, 16) - parseInt(b.id, 16));
+console.log(cart)
 
 let products = JSON.parse(sessionStorage.getItem('products'));
 
