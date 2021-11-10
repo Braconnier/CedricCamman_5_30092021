@@ -5,6 +5,7 @@ let productId = url.searchParams.get('id');
 
 let urlProductId = 'http://localhost:3000/api/products' + `/${productId}`;
 
+
 // recuperation du panier pour manipulations  --------------------------------------------------------------------------------------------------------------------------------------------------
 let cart = JSON.parse(localStorage.getItem('canap'));
 
