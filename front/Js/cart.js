@@ -26,7 +26,9 @@ function checkCart() {
 
         // renvoie vers la page d'accueil
         window.location = '/front/html';
+
     } else {
+
         cart.sort((a, b) => parseInt(a.id, 16) - parseInt(b.id, 16));
 
     }
@@ -34,6 +36,7 @@ function checkCart() {
 
 // interroge l'api pour avoir la liste des produits ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 async function getProduct() {
+
     await fetch('http://localhost:3000/api/products')
 
         //recupère les données au format json (catalogue des produits)
@@ -41,8 +44,11 @@ async function getProduct() {
 
             //parcourt le document pour créer les objets product
             .then(jsonObject => {
+
                 sessionStorage.setItem('products', JSON.stringify(jsonObject));
+
                 products = jsonObject;
+
             }))
 }
 
